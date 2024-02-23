@@ -4,20 +4,20 @@
             <ul class="grid justify-items-center max-w-6xl mx-auto">
                 <li class="pt-10">
                     <article class="container">
-                        <div class="card" :style="typeColor[pokemon?.types[0]].bgn">
+                        <div class="card" :style="typeColor[pokemon?.types?.[0]]?.bgn">
                             <img :src="pokemon.sprite" :alt="pokemon.name" loading="lazy">
                             <h1 class="name">{{pokemon.name}}</h1>
                             <h2 class="id">#{{pokemon.id}}</h2>
 
-                            <div class="types" v-for="type in pokemon?.types" :key="type.name">
-                                <span :style="typeColor[type].color">
+                            <div class="types">
+                                <span :style="typeColor[type].color" v-for="type in pokemon?.types" :key="type.name">
                                     <img :src="typeColor[type].icon" alt="type">
                                     <p>{{type}}</p>
                                 </span>
                             </div>
 
-                            <div class="stats" v-for="stat in pokemon?.stats" :key="stat.name">
-                                <span :style="stat.color">
+                            <div class="stats grid grid-cols-3 mx-auto">
+                                <span :style="stat.color" v-for="stat in pokemon?.stats" :key="stat.name">
                                     <img :src="stat.name" class="svg"/>
                                     <p>{{ stat.base_stat }}</p>
                                 </span>
@@ -32,7 +32,6 @@
 </template>
 
 <script>
-
 export default{
     components:{
     },
@@ -138,79 +137,86 @@ export default{
             },
         }
     },
-    async created(){
-        const maxPokemon = 1025;
-        const numPokemon =  Math.floor(Math.random()*maxPokemon);
-        const url = `https://pokeapi.co/api/v2/pokemon/${numPokemon}/`;
-        const data = await fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                return data
-            });
-        let pokeStructure = {
-            id: pokeId(data.id),
-            name: data.name,
-            sprite: data.sprites.other["official-artwork"].front_default,
-            sprite_dream_world: data.sprites.other.dream_world.front_default,
-            types: data.types.map((item) => {
-                return item.type.name
-            }),
-            moves: data.moves.map((item) => {
-                return item.move.name
-            }),
-            stats: data.stats.map((item) => ({
-                name: statsName(item.stat.name),
-                base_stat: item.base_stat,
-                color: statsColor(item.stat.name)
-            }))
-        }
-
-        console.log(pokeStructure)
-
-        function pokeId(id){
-            id = id.toString();
-            if (id.length === 1) {
-                id = "00" + id;
-            }
-            if (id.length === 2) {
-                id = "0" + id;
-            }
-            return id;
-        }
-
-        function statsName(name) {
-            let names = {
-                attack: '/icons/AttackIcon.svg',
-                defense: '/icons/DefenseIcon.svg',
-                hp: '/icons/HpIcon.svg',
-                "special-attack": '/icons/SpecialAttackIcon.svg',
-                "special-defense": '/icons/SpecialDefenseIcon.svg',
-                speed: '/icons/SpeedIcon.svg',
+    beforeMount(){
+        this.getPokemon();
+    },
+    created(){
+    },
+    methods:{
+        async getPokemon(){
+            const maxPokemon = 1025;
+            const numPokemon = Math.floor(Math.random() * maxPokemon);
+            const url = `https://pokeapi.co/api/v2/pokemon/${numPokemon}/`;
+            const data = await fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    return data
+                });
+            let pokeStructure = {
+                id: pokeId(data.id),
+                name: data.name,
+                sprite: data.sprites.other["official-artwork"].front_default,
+                sprite_dream_world: data.sprites.other.dream_world.front_default,
+                types: data.types.map((item) => {
+                    return item.type.name
+                }),
+                moves: data.moves.map((item) => {
+                    return item.move.name
+                }),
+                stats: data.stats.map((item) => ({
+                    name: statsName(item.stat.name),
+                    base_stat: item.base_stat,
+                    color: statsColor(item.stat.name)
+                }))
             }
 
-            return names[name];
-        }
+            console.log(pokeStructure)
 
-        function statsColor(name) {
-            let colors = {
-                attack: "background:linear-gradient(105deg,#c0c0c0 30px,#5A5A5A 31px,#5A5A5A);",
-                defense: "background:linear-gradient(105deg,#4682b4 30px,#5A5A5A 31px,#5A5A5A);",
-                hp: "background:linear-gradient(105deg,#e32636 30px,#5A5A5A 31px,#5A5A5A);",
-                "special-attack": "background:linear-gradient(105deg,#c0c0c0 30px,#5A5A5A 31px,#5A5A5A);",
-                "special-defense": "background:linear-gradient(105deg,#4682b4 30px,#5A5A5A 31px,#5A5A5A);",
-                speed: "background:linear-gradient(105deg,#7CC7B2 30px,#5A5A5A 31px,#5A5A5A);",
+            function pokeId(id) {
+                id = id.toString();
+                if (id.length === 1) {
+                    id = "00" + id;
+                }
+                if (id.length === 2) {
+                    id = "0" + id;
+                }
+                return id;
             }
-            return colors[name]
-        }
 
-        this.pokemon = pokeStructure
+            function statsName(name) {
+                let names = {
+                    attack: '/icons/AttackIcon.svg',
+                    defense: '/icons/DefenseIcon.svg',
+                    hp: '/icons/HpIcon.svg',
+                    "special-attack": '/icons/SpecialAttackIcon.svg',
+                    "special-defense": '/icons/SpecialDefenseIcon.svg',
+                    speed: '/icons/SpeedIcon.svg',
+                }
+
+                return names[name];
+            }
+
+            function statsColor(name) {
+                let colors = {
+                    attack: "background:linear-gradient(105deg,#c0c0c0 30px,#5A5A5A 31px,#5A5A5A);",
+                    defense: "background:linear-gradient(105deg,#4682b4 30px,#5A5A5A 31px,#5A5A5A);",
+                    hp: "background:linear-gradient(105deg,#e32636 30px,#5A5A5A 31px,#5A5A5A);",
+                    "special-attack": "background:linear-gradient(105deg,#c0c0c0 30px,#5A5A5A 31px,#5A5A5A);",
+                    "special-defense": "background:linear-gradient(105deg,#4682b4 30px,#5A5A5A 31px,#5A5A5A);",
+                    speed: "background:linear-gradient(105deg,#7CC7B2 30px,#5A5A5A 31px,#5A5A5A);",
+                }
+                return colors[name]
+            }
+
+            this.pokemon = await pokeStructure
+        }
     }
 }
 </script>
 
 <style>
 .container {
-    width: 350px;
+    width: 350px !important;
 }
 .card {
     position: relative;
@@ -273,42 +279,6 @@ export default{
         }
     }
 }
-
-.my-24{
-    margin-top: 6rem;
-    margin-bottom: 6rem;
-}
-
-.px-10{
-    margin-left: 2.5rem;
-    margin-right: 2.55rem;
-}
-
-.justify-items-center {
-    justify-items: center;
-}
-
-.max-w-6xl{
-    max-width:72rem;
-}
-
-.pt-10{
-    padding-top: 2.5rem;
-}
-
-.grid{
-    display: grid;
-}
-
-.grid-cols-3{
-    grid-template-columns: repeat(3, minmax(0,1fr));
-}
-
-.mx-auto{
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .stats {
     text-transform: capitalize;
     margin: 20px 0 40px 0;
@@ -327,6 +297,8 @@ export default{
         .svg{
             width:20px;
             height:20px;
+            margin: 0;
+            filter: invert(100%);
         }
         p{
              margin: 0 auto;
