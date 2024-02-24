@@ -3,9 +3,10 @@
         <div class="px-10">
             <ul class="grid justify-items-center max-w-6xl mx-auto">
                 <li class="pt-10">
-                    <article class="container">
+                    <p class="loader" v-if="!dataLoaded"></p>
+                    <article class="container" v-if="dataLoaded">
                         <div class="card" :style="typeColor[pokemon?.types?.[0]]?.bgn">
-                            <img :src="pokemon.sprite" :alt="pokemon.name" loading="lazy">
+                            <img :src="pokemon.sprite" loading="lazy"> <!-- :alt="pokemon.name" -->
                             <h1 class="name">{{pokemon.name}}</h1>
                             <h2 class="id">#{{pokemon.id}}</h2>
 
@@ -37,6 +38,7 @@ export default{
     },
     data(){
         return{
+            dataLoaded: false,
             pokemon: [],
             typeColor: {
                 normal: {
@@ -208,7 +210,8 @@ export default{
                 return colors[name]
             }
 
-            this.pokemon = await pokeStructure
+            this.pokemon = pokeStructure
+            this.dataLoaded  =  true;
         }
     }
 }
@@ -216,9 +219,11 @@ export default{
 
 <style>
 .container {
-    width: 350px !important;
+    width: 350px;
 }
 .card {
+    width: 350px  !important;
+    height: 516px !important;
     position: relative;
     border-style: solid;
     border-color: #00b894;
@@ -231,7 +236,8 @@ export default{
     img{
         display: block;
         width: 180px;
-        max-height: 200px;
+        height: 180px;
+        /* max-height: 200px; */
         position: relative;
         margin: 20px auto;
     }
@@ -239,6 +245,8 @@ export default{
 
 .name{
     text-align: center;
+    width: 290px;
+    height: 24px;
     font-weight: 600;
     text-transform: capitalize;
     color: #404060;
@@ -304,5 +312,26 @@ export default{
              margin: 0 auto;
         }
     }
+}
+.loader {
+    border: 24px solid #FFF;
+    border-color: #FF3D00 #FF3D00 #fff #fff;
+    border-radius: 50%;
+    position: relative;
+    animation: rotate 1s linear infinite
+}
+.loader:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translate(-50% , -125%);
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    }
+@keyframes rotate {
+    100%   { transform: rotate(360deg)}
 }
 </style>

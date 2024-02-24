@@ -1,29 +1,18 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+  <div class="fixed inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#190134_100%)]"></div>
   <PokeCard></PokeCard>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import PokeCard from './components/PokeCard.vue'
 
 export default {
   name: 'App',
   components: {
-    // HelloWorld,
     PokeCard
   }
 }
 </script>
 
 <style>
-/* #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
 </style>
