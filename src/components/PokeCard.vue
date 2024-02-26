@@ -211,12 +211,12 @@ export default{
 
             function statsName(name) {
                 let names = {
-                    attack: '/icons/AttackIcon.svg',
-                    defense: '/icons/DefenseIcon.svg',
-                    hp: '/icons/HpIcon.svg',
-                    "special-attack": '/icons/SpecialAttackIcon.svg',
-                    "special-defense": '/icons/SpecialDefenseIcon.svg',
-                    speed: '/icons/SpeedIcon.svg',
+                    attack: './icons/AttackIcon.svg',
+                    defense: './icons/DefenseIcon.svg',
+                    hp: './icons/HpIcon.svg',
+                    "special-attack": './icons/SpecialAttackIcon.svg',
+                    "special-defense": './icons/SpecialDefenseIcon.svg',
+                    speed: './icons/SpeedIcon.svg',
                 }
 
                 return names[name];

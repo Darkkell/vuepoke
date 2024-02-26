@@ -1,10 +1,18 @@
 # vuepoke
 
+- you can see the live preview on this [link](https://dev1992.com/pokedex/).
+
 ## About
 
 - Only to compare with Astro - HTMX version of Pokedex.
 
 ## Preview
+
+- Last version
+
+![PokeCard preview](/src/images/555shots_so.webp "Pokedex Preview")
+
+- first version
 
 ![PokeCard preview](/src/images/173shots_so.webp "Pokedex Preview")
 
