@@ -1,35 +1,48 @@
 <template>
-    <section class="my-24">
-        <div class="px-10">
-            <ul class="grid justify-items-center max-w-6xl mx-auto">
-                <li class="pt-10">
-                    <p class="loader" v-if="!dataLoaded"></p>
-                    <article class="container" v-if="dataLoaded">
-                        <div class="card" :style="typeColor[pokemon?.types?.[0]]?.bgn">
-                            <img :src="pokemon.sprite" loading="lazy"> <!-- :alt="pokemon.name" -->
-                            <h1 class="name">{{pokemon.name}}</h1>
-                            <h2 class="id">#{{pokemon.id}}</h2>
+    <div>
+        <label for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white max-w-6xl w-full mx-auto">
+            Busca tu Pokémon por nombre o número
+        </label>
+        <input
+            type="search"
+            name="search"
+            id="base-input"
+            v-model="data"
+            @change="searchPokemon"
+            placeholder="Pikachu, 25, Mankey"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  max-w-6xl w-full mx-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:foocus:ring-blue-500 dark:focus:border-blue-500">
+    </div>
 
-                            <div class="types">
-                                <span :style="typeColor[type].color" v-for="type in pokemon?.types" :key="type.name">
-                                    <img :src="typeColor[type].icon" alt="type">
-                                    <p>{{type}}</p>
-                                </span>
-                            </div>
+    <ul class="grid justify-items-center max-w-6xl mx-auto">
+        <li class="pt-10">
+            <p v-if="err" class="block mb-2 text-sm font-medium dark:text-white mx-auto">No existe el Pokémon</p>
+            <p class="loader" v-if="!dataLoaded"></p>
+            <article class="container" v-if="dataLoaded">
+                <div class="card fade-enter-active fade-leave-active" :style="typeColor[pokemon?.types?.[0]]?.bgn">
+                    <!-- <p>{{ data }}</p> -->
+                    <img :src="pokemon.sprite" loading="lazy"> <!-- :alt="pokemon.name" -->
+                    <h1 class="name">{{pokemon.name}}</h1>
+                    <h2 class="id">#{{pokemon.id}}</h2>
 
-                            <div class="stats grid grid-cols-3 mx-auto">
-                                <span :style="stat.color" v-for="stat in pokemon?.stats" :key="stat.name">
-                                    <img :src="stat.name" class="svg"/>
-                                    <p>{{ stat.base_stat }}</p>
-                                </span>
-                            </div>
+                    <div class="types">
+                        <span :style="typeColor[type].color" v-for="type in pokemon?.types" :key="type.name">
+                            <img :src="typeColor[type].icon" alt="type">
+                            <p>{{type}}</p>
+                        </span>
+                    </div>
 
-                        </div>
-                    </article>
-                </li>
-            </ul>
-        </div>
-    </section>
+                    <div class="stats grid grid-cols-3 mx-auto">
+                        <span :style="stat.color" v-for="stat in pokemon?.stats" :key="stat.name">
+                            <img :src="stat.name" class="svg"/>
+                            <p>{{ stat.base_stat }}</p>
+                        </span>
+                    </div>
+
+                </div>
+            </article>
+        </li>
+    </ul>
 </template>
 
 <script>
@@ -137,6 +150,8 @@ export default{
                     bgn: "background:radial-gradient(circle at 50% 0%,#7CC7B2 36%, #ffffff 36%);"
                 },
             },
+            data:'',
+            err: false
         }
     },
     beforeMount(){
@@ -146,33 +161,42 @@ export default{
     },
     methods:{
         async getPokemon(){
-            const maxPokemon = 1025;
-            const numPokemon = Math.floor(Math.random() * maxPokemon);
-            const url = `https://pokeapi.co/api/v2/pokemon/${numPokemon}/`;
-            const data = await fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    return data
-                });
-            let pokeStructure = {
-                id: pokeId(data.id),
-                name: data.name,
-                sprite: data.sprites.other["official-artwork"].front_default,
-                sprite_dream_world: data.sprites.other.dream_world.front_default,
-                types: data.types.map((item) => {
-                    return item.type.name
-                }),
-                moves: data.moves.map((item) => {
-                    return item.move.name
-                }),
-                stats: data.stats.map((item) => ({
-                    name: statsName(item.stat.name),
-                    base_stat: item.base_stat,
-                    color: statsColor(item.stat.name)
-                }))
-            }
+            try {
+                this.err = false;
+                const maxPokemon = 1025;
+                const numPokemon = this.data != ''  ? this.data : Math.floor(Math.random() * maxPokemon);
+                const url = `https://pokeapi.co/api/v2/pokemon/${numPokemon}/`;
+                const data = await fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        return data
+                    });
+                let pokeStructure = {
+                    id: pokeId(data.id),
+                    name: data.name,
+                    sprite: data.sprites.other["official-artwork"].front_default,
+                    sprite_dream_world: data.sprites.other.dream_world.front_default,
+                    types: data.types.map((item) => {
+                        return item.type.name
+                    }),
+                    moves: data.moves.map((item) => {
+                        return item.move.name
+                    }),
+                    stats: data.stats.map((item) => ({
+                        name: statsName(item.stat.name),
+                        base_stat: item.base_stat,
+                        color: statsColor(item.stat.name)
+                    }))
+                }
 
-            console.log(pokeStructure)
+                // console.log(pokeStructure)
+
+                this.pokemon = pokeStructure
+                this.dataLoaded = true;
+            } catch (error) {
+                console.error('sucedio un error');
+                this.err = true;
+            }
 
             function pokeId(id) {
                 id = id.toString();
@@ -209,9 +233,9 @@ export default{
                 }
                 return colors[name]
             }
-
-            this.pokemon = pokeStructure
-            this.dataLoaded  =  true;
+        },
+        searchPokemon(){
+            this.getPokemon();
         }
     }
 }
@@ -235,8 +259,9 @@ export default{
     isolation: isolate;
     img{
         display: block;
-        width: 180px;
-        height: 180px;
+        max-width: 180px;
+        aspect-ratio: 1/1;
+        /* height: 180px; */
         /* max-height: 200px; */
         position: relative;
         margin: 20px auto;
@@ -334,4 +359,29 @@ export default{
 @keyframes rotate {
     100%   { transform: rotate(360deg)}
 }
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: opacity .5s ease-out;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-leave-active {
+  transition: opacity .3s ease-in;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
 </style>
