@@ -1,7 +1,7 @@
 <template>
     <div>
         <label for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white max-w-6xl w-full mx-auto">
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white sm:max-w-xl md:max-w-6xl w-full mx-auto">
             Busca tu Pokémon por nombre o número
         </label>
         <input
@@ -11,15 +11,15 @@
             v-model="data"
             @change="searchPokemon"
             placeholder="Pikachu, 25, Mankey"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  max-w-6xl w-full mx-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:foocus:ring-blue-500 dark:focus:border-blue-500">
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  sm:max-w-xl md:max-w-6xl w-full mx-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  dark:foocus:ring-blue-500 dark:focus:border-blue-500">
     </div>
 
-    <ul class="grid justify-items-center max-w-6xl mx-auto">
+    <ul class="grid justify-items-center md:max-w-6xl mx-auto">
         <li class="pt-10">
             <p v-if="err" class="block mb-2 text-sm font-medium dark:text-white mx-auto">No existe el Pokémon</p>
             <p class="loader" v-if="!dataLoaded"></p>
-            <article class="container" v-if="dataLoaded">
-                <div class="card fade-enter-active fade-leave-active" :style="typeColor[pokemon?.types?.[0]]?.bgn">
+            <article class="max-w-[350px]" v-if="dataLoaded">
+                <div class="card max-w-[350px] max-h-[516px] fade-enter-active fade-leave-active" :style="typeColor[pokemon?.types?.[0]]?.bgn">
                     <!-- <p>{{ data }}</p> -->
                     <img :src="pokemon.sprite" loading="lazy"> <!-- :alt="pokemon.name" -->
                     <h1 class="name">{{pokemon.name}}</h1>
@@ -164,7 +164,7 @@ export default{
             try {
                 this.err = false;
                 const maxPokemon = 1025;
-                const numPokemon = this.data != ''  ? this.data : Math.floor(Math.random() * maxPokemon);
+                const numPokemon = this.data != ''  ? this.data.toLowerCase() : Math.floor(Math.random() * maxPokemon);
                 const url = `https://pokeapi.co/api/v2/pokemon/${numPokemon}/`;
                 const data = await fetch(url)
                     .then(response => response.json())
@@ -242,18 +242,12 @@ export default{
 </script>
 
 <style>
-.container {
-    width: 350px;
-}
 .card {
-    width: 350px  !important;
-    height: 516px !important;
     position: relative;
     border-style: solid;
     border-color: #00b894;
     border-width: 10px;
-    width: 100%;
-    padding: 30px 20px;
+    /* padding: 30px 20px; */
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     isolation: isolate;
@@ -261,8 +255,6 @@ export default{
         display: block;
         max-width: 180px;
         aspect-ratio: 1/1;
-        /* height: 180px; */
-        /* max-height: 200px; */
         position: relative;
         margin: 20px auto;
     }
