@@ -23,7 +23,7 @@
                     <!-- <p>{{ data }}</p> -->
                     <img :src="pokemon.sprite" loading="lazy"> <!-- :alt="pokemon.name" -->
                     <h1 class="name">{{pokemon.name}}</h1>
-                    <h2 class="id">#{{pokemon.id}}</h2>
+                    <h2 class="id text-[6rem]">#{{pokemon.id}}</h2>
 
                     <div class="types">
                         <span :style="typeColor[type].color" v-for="type in pokemon?.types" :key="type.name">
@@ -247,7 +247,6 @@ export default{
     border-style: solid;
     border-color: #00b894;
     border-width: 10px;
-    /* padding: 30px 20px; */
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     isolation: isolate;
@@ -273,7 +272,7 @@ export default{
     position: absolute;
     top: 1rem;
     left: 50%;
-    transform: translate(-60%,-20%);
+    transform: translate(-50%,-20%);
     font-size: 6rem;
     font-weight: 800;
     z-index: -1;
