@@ -18,6 +18,15 @@
 
 ## Project setup
 
+- vue config path on vue.config.js
+
+```js
+module.exports = defineConfig({
+  ...
+  publicPath: '/pokedex'
+})
+```
+
 ```sh
 npm install
 ```
